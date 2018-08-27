@@ -1,0 +1,102 @@
+{extend name="block:base" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-role" data-type="add">添加</button>
+            </div>
+            <table id="user-back-catagory" lay-filter="user-back-catagory"></table>
+
+            <script type="text/html" id="table-useradmin-status">
+                {{#  if(d.status ==1){ }}
+                <button class="layui-btn layui-btn-xs">已审核</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
+                {{# } }}
+            </script>
+
+            <script type="text/html" id="table-useradmin-option">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="extra_js"}
+<script>
+    layui.use(['table', 'layedit', 'admincatagory'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , table = layui.table
+            , admincatagory = layui.admincatagory;
+
+        //初始化表格
+        admincatagory.init_table('{:url(\'catagory/index\')}');
+
+        table.on('tool(user-back-catagory)', function (obj) {
+            var id = obj.data.id;
+            if (obj.event === "edit") {
+                layer.prompt({
+                    title: obj.data.catagory_name,
+                    type: 2,
+                    content: '{:url(\'catagory/edit\')}' + '?id=' + id,
+                    btn: ['确定', '取消'],
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                        l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                admincatagory.save_data("{:url('catagory/edit')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    },
+                    success: function (e, t) {
+                    }
+                });
+            }else if(obj.event ==="del"){
+                layer.confirm("确定删除《"+obj.data.catagory_name+"》?",
+                    function (t) {
+                        admincatagory.del_data("{:url('catagory/del_data')}",id);
+                    })
+            }
+        });
+
+        $('.layui-btn.layuiadmin-btn-role').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //事件
+        var active = {
+            add: function () {
+                layer.prompt({
+                    type: 2
+                    , title: '新增视频'
+                    , content: "{:url('catagory/add')}"
+                    , btn: ['确定', '取消'],
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                        l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                admincatagory.save_data("{:url('catagory/add')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    }
+                });
+
+            }
+        }
+
+
+    });
+</script>
+{/block}

@@ -1,0 +1,31 @@
+<div class="layui-side my-side">
+    <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree">
+            {volist name="menu_data['menu_list']" id="vo"}
+            {empty  name="vo.childs"}
+            {/* 这个菜单不存在子菜单 */ }
+            <li class="layui-nav-item  {eq name="vo.url" value="$menu_data['current_url']"} layui-this {/eq}"><a href="{:url($vo['url'])}"><i class="{$vo.icon}"></i>{$vo.title}</a></li>
+            {else/}
+            {/* 判断当前的菜单是否为子菜单 */ }
+            {foreach  name="vo.childs" item="childs"}
+                {eq name="childs.url" value="$menu_data['current_url']"} {assign name="ischild" value="1" /} {/eq}
+            {/foreach}
+            <li class="layui-nav-item {present name="ischild"}layui-nav-itemed{/present}">
+                <a class="" href="javascript:;"><i class="{$vo.icon}"></i>
+                    {$vo.title}</a>
+                <dl class="layui-nav-child">
+                    {foreach  name="vo.childs" item="childs"}
+                    <dd  {eq name='childs.url' value='$menu_data["current_url"]'} class="layui-this" {/eq}>
+                        <a href="{:url($childs['url'])}"><i class="{$childs.icon}"></i>{$childs.title}</a>
+                    </dd>
+                    {/foreach}
+                </dl>
+            </li>
+            {php}unset($ischild);{/php}
+
+            {/empty}
+            {/volist}
+           </ul>
+    </div>
+</div>

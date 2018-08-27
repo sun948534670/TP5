@@ -1,0 +1,108 @@
+{extend name="block:base" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-role" data-type="add">添加</button>
+            </div>
+            <table id="user-back-video" lay-filter="user-back-video"></table>
+
+            <script type="text/html" id="table-useradmin-status">
+                {{#  if(d.status ==1){ }}
+                <button class="layui-btn layui-btn-xs">已审核</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
+                {{# } }}
+            </script>
+
+            <script type="text/html" id="table-useradmin-option">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="extra_js"}
+<script>
+    layui.use(['table', 'layedit', 'adminvideo'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , table = layui.table
+            , layedit = layui.layedit
+            , adminvideo = layui.adminvideo;
+
+        //初始化表格
+        adminvideo.init_table('{:url(\'video/index\')}');
+
+        table.on('tool(user-back-video)', function (obj) {
+            var id = obj.data.id;
+            if (obj.event === "edit") {
+                var edit = layer.open({
+                    title: obj.data.name,
+                    type: 2,
+                    content: '{:url(\'video/edit\')}' + '?id=' + id,
+                    area: ['320px', '195px'],
+                    maxmin: true,
+                    btn: ['确定', '取消'],
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                        l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                adminvideo.save_data("{:url('video/edit')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    },
+                    success: function (e, t) {
+                    }
+                });
+                layer.full(edit);
+            }else if(obj.event ==="del"){
+                layer.confirm("确定删除《"+obj.data.name+"》?",
+                    function (t) {
+                        adminvideo.del_data("{:url('video/del_data')}",id);
+                    })
+            }
+        });
+
+        $('.layui-btn.layuiadmin-btn-role').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //事件
+        var active = {
+            add: function () {
+                var add = layer.open({
+                    type: 2
+                    , title: '新增视频'
+                    , content: "{:url('video/add')}"
+                    , area: ["600px", "650px"]
+                    , btn: ['确定', '取消'],
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                        l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                adminvideo.save_data("{:url('video/add')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    }
+                });
+                layer.full(add);
+
+            }
+        }
+
+
+    });
+</script>
+{/block}

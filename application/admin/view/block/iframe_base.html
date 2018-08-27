@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="utf-8">
+<head>
+    {include file="block/header" /}
+    {block name="extra_css"}{/block}
+</head>
+<body>
+<div class="layui-layout">
+    <div class="">
+        <div class="layui-tab layui-tab-card my-tab" lay-filter="card" lay-allowClose="true">
+            <div class="layui-fluid">
+                {block name="content"}无内容{/block}
+            </div>
+        </div>
+    </div>
+
+    <script src="__ADMIN_VENDOR__/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '__ADMIN_JS__/'
+        }).use('global');
+    </script>
+    {block name="extra_js"}{/block}
+</div>
+</body>
+</html>

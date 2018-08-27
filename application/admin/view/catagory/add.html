@@ -1,0 +1,35 @@
+{extend name="block:iframe_base" /}
+
+{block name="content"}
+<div class="layui-form" lay-filter="admin-form-video" id="admin-form-video" style="padding: 20px 0 0 0;">
+    <input type="hidden" name="__token__" value="{$Request.token}"/>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="catagory_name" lay-verify="required" placeholder="请输入分类名称" autocomplete="off" class="layui-input" value="">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" lay-filter="switch" name="switch" lay-skin="switch" lay-text="启用|禁用" value="1">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="user-front-submit" id="user-front-submit" value="确认">
+    </div>
+
+</div>
+{/block}
+{block name="extra_js"}
+<script>
+    layui.use(['form', 'upload'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , upload = layui.upload;
+    });
+</script>
+{/block}

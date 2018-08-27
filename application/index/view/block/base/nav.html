@@ -1,0 +1,24 @@
+<div class="layui-header layui-bg-blue">
+    <a class="layui-logo">
+        <img src="__WEB_IMG__/fixed/headLogo-index.png">
+    </a>
+    <ul class="layui-nav layui-bg-blue layui-layout-left">
+        <div class="layui-form component">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入想要查找的视频" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </ul>
+
+    <ul class="layui-nav layui-bg-blue layui-layout-right" lay-filter="layadmin-layout-right">
+        <li class="layui-nav-item" lay-unselect="">
+            <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+                <i class="layui-icon layui-icon-notice"></i>
+                <!-- 如果有新消息，则显示小圆点 -->
+                <span class="layui-badge-dot"></span>
+            </a>
+        </li>
+    </ul>
+</div>

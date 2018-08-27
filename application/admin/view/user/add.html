@@ -1,0 +1,75 @@
+{extend name="block:iframe_base" /}
+{block name="content"}
+<style>
+    .layui-form-label{
+        width: 100px;
+    }
+</style>
+<div class="layui-form" lay-filter="admin-form-useradmin" id="admin-form-useradmin" style="padding: 20px 0 0 0;">
+    <input type="hidden" name="__token__" value="{$Request.token}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限组</label>
+        <div class="layui-input-inline">
+            <select name="role_id" lay-verify="required" lay-search>
+                <option value=""></option>
+                    {volist name="roles" id="role"}
+                        <option value="{$key}"  {eq name="$key" value="1"}disabled{/eq}>{$role}</option>
+                    {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phone" lay-verify="tel" placeholder="请输入手机号码" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" lay-verify="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="password" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">再次确认密码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="password_confirm" lay-verify="required"  placeholder="请输入密码" autocomplete="off" class="layui-input" >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" lay-filter="switch" name="switch" lay-skin="switch" lay-text="启用|禁用" value="1">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="user-front-submit" id="user-front-submit" value="确认">
+    </div>
+</div>
+{/block}
+{block name="extra_js"}
+<script>
+    layui.use(['form'], function(){
+        var $ = layui.$
+            ,form = layui.form;
+    });
+</script>
+{/block}

@@ -1,0 +1,29 @@
+<div class="site-content">
+    <div style="height: 30px;">
+        <a class="front-icon link-txt" href="{:url('index/hot_list')}">
+            <i class="layui-icon layui-icon-video"></i>
+            <span class="mod-text">热门视频</span>
+            <span class="more">更多&gt;</span>
+        </a>
+    </div>
+    <div class="layui-row wrap-side">
+        <div class="wrap-side-big layui-col-xs12 layui-col-sm5 layui-col-md4">
+            {:widget('widgets/video_carousel', ['name' => 'hot_carousel','data' =>$sliders])}
+        </div>
+        <div class="wrap-side-line layui-col-xs12 layui-col-sm7 layui-col-md8">
+            <div class="side-line">
+                <div class="list-container layui-col-md4 layui-col-sm12">
+                    <a href="#">
+                        <div class="list-img">
+                            <img src="__WEB_IMG__/fixed/portrait.png">
+                        </div>
+                        <div class="list-text">
+                            <p class="info">2018春夏季新款港味短款白色T恤+网纱中长款chic半身裙套装两件套</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="side-line"></div>
+        </div>
+    </div>
+</div>`

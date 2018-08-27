@@ -1,0 +1,133 @@
+{extend name="block:base" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-role" data-type="batchdel">删除</button>
+                <button class="layui-btn layuiadmin-btn-role" data-type="add">添加</button>
+            </div>
+            <table id="user-back-slider" lay-filter="user-back-slider"></table>
+
+            <script type="text/html" id="table-useradmin-img">
+                    <img class="slider-img" lay-event="img" src="__UPLOAD_BASE__/frontend/slider/{{ d.img }}">
+            </script>
+            <script type="text/html" id="table-useradmin-status">
+                {{#  if(d.status ==1){ }}
+                <button class="layui-btn layui-btn-xs">显示</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">不显示</button>
+                {{# } }}
+            </script>
+            <script type="text/html" id="table-useradmin-options">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"  ><i
+                        class="layui-icon layui-icon-edit" ></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="extra_js"}
+<script>
+    layui.use(['table','layer','adminslider'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , layer = layui.layer
+            , table = layui.table
+            , adminslider = layui.adminslider;
+        //执行渲染
+        table.render({
+            elem: '#user-back-slider' //指定原始表格元素选择器（推荐id选择器）
+            , height: 350 //容器高度
+            , url: '{:url(\'slider/data\')}'
+            , page: false
+            , cols: [[//标题栏
+                {fixed: 'left', title: '', align: 'center', width: 50, type: "checkbox"},
+                {field: 'id', title: 'ID', width: 60}
+                , {field: 'title', title: '标题', width: 150}
+                , {field: 'content', title: '内容', width: 200}
+                , {field: 'href', title: '超链接', width: 100}
+                , {fixed: 'right', title: '图片(点击查看原图)', align: 'center', toolbar: '#table-useradmin-img'} //这里的toolbar值是模板元素的选择器
+                , {fixed: 'right', title: '状态', align: 'center', toolbar: '#table-useradmin-status',width: 100} //这里的toolbar值是模板元素的选择器
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#table-useradmin-options'} //这里的toolbar值是模板元素的选择器
+            ]]
+        });
+
+        table.on('tool(user-back-slider)', function (obj) {
+            var id = obj.data.id;
+            if (obj.event === "edit") {
+                layer.open({
+                    type: 2,
+                    title: "编辑轮播图",
+                    content: "{:url('slider/edit')}" + '?id=' + id,
+                    area: ["600px", "650px"],
+                    btn: ["保存", "取消"],
+                    maxmin: true,
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                            l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                adminslider.save_data("{:url('slider/edit')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    },
+                    success: function (e, t) {
+                    }
+                })
+            }else if(obj.event ==="del" && id !='1'){
+                layer.confirm("确定删除此管理员？",
+                    function (t) {
+                        adminslider.del_data("{:url('slider/del_data')}",id);
+                    })
+            }else if(obj.event ==='img'){
+                adminslider.see_img("{:url('slider/data')}",id,'__UPLOAD_BASE__');
+            }
+        });
+
+        //事件
+        var active = {
+            batchdel: function(){
+                var checkStatus = table.checkStatus('user-back-slider')
+                    ,checkData = checkStatus.data; //得到选中的数据
+
+                if(checkData.length === 0){
+                    return layer.msg('请选择数据');
+                }
+
+                layer.confirm('确定删除吗？', function(index) {
+                    adminslider.del_data("{:url('slider/del_data')}",checkData);
+                });
+            },
+            add: function(){
+                layer.open({
+                    type: 2
+                    ,title: '添加新角色'
+                    ,content:"{:url('slider/add')}"
+                    ,area: ["600px", "650px"]
+                    ,btn: ['确定', '取消'],
+                    yes: function (e, t) {
+                        var l = window["layui-layer-iframe" + e],
+                            r = "user-front-submit",
+                            n = t.find("iframe").contents().find("#" + r);
+                        l.layui.form.on("submit(" + r + ")",
+                            function (t) {
+                                adminslider.save_data("{:url('slider/add')}", t.field, e);
+                            }),
+                            n.trigger("click")
+                    }
+                });
+            }
+        }
+
+        $('.layui-btn.layuiadmin-btn-role').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+{/block}

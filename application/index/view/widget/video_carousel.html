@@ -1,0 +1,13 @@
+<div class="layui-carousel" id="{$carousel_name}">
+    <div carousel-item>
+        {volist name="$carousel_data" id="row"}
+        <div>
+            <img src="__UPLOAD_BASE__/frontend/slider/{$row.img}">
+            <div class="review">
+                <h2 class="center">{$row.title}</h2>
+                <p>他是来自克罗地亚的电子钢琴演奏天才，他和他的音乐以特立独行的姿态颠覆了人们对音乐的所有想象。</p>
+            </div>
+        </div>
+        {/volist}
+    </div>
+</div>

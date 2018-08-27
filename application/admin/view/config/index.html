@@ -1,0 +1,92 @@
+{extend name="block:base" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h3>基础信息管理</h3>
+        </div>
+        <div class="layui-card-body">
+
+            <form class="layui-form layui-form-pane" action="{:url()}"  lay-filter="admin-config" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$config.website_name.title}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="{$config.website_name.name}" required="" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" value="{$config.website_name.value}">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">网站全局名称，请勿随意更改</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$config.website_logo.title}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="website_logo" disabled lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input layui-disabled" value="{$config.website_logo.value}">
+                    </div>
+                    <button type="button" class="layui-btn" id="upload_btn"><i class="layui-icon"></i>上传图片(PNG格式)</button>
+                    <button type="button" class="layui-btn" id="show_logo"><i class="layui-icon"></i>查看lOGO</button>
+                    <div class="layui-form-mid layui-word-aux">仅支持PNG格式</div>
+                    <div id="website_logo_thumb" class="layui-hide">
+                        <img layer-src="__WEB_IMG__/fixed/headLogo-index.png" src="__WEB_IMG__/fixed/headLogo-index.png" alt="网站LOGO">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="formDemoPane">立即提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="extra_js"}
+<script>
+    layui.use(['layer','upload','form'], function () {
+        var $ = layui.$
+            ,layer = layui.layer
+            ,upload = layui.upload
+            ,form = layui.form
+            ,upload_btn = $("#upload_btn")
+            ,show_logo = $("#show_logo");
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: upload_btn
+            , url: '/admin.php/config/index.html'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#upload-normal-img').attr('src', result); //图片链接（base64）
+                });
+                upload_btn.attr("disabled","disabled").text("上传中...").addClass("layui-btn-disabled");
+            }
+            , done: function (res) {
+
+                upload_btn.attr("disabled",false).text("重新上传").removeClass("layui-btn-disabled");
+
+                //如果上传失败
+                if (res.code == 0) {
+                    return layer.msg('上传失败!失败原因:' + res.msg);
+                } else if (res.code == 1) {
+                    //上传成功
+                    $("#img_path").val(res.msg);
+                    return layer.msg('成功');
+                }
+            }
+            , error: function () {
+                return layer.msg('上传失败',);
+            }
+        });
+
+        //查查看logo
+            layer.photos({
+                photos: '#website_logo_thumb',
+                tab: function(pic, layero){
+                    console.log(pic) //当前图片的一些信息
+                }
+            });
+
+            show_logo.on("click",function () {
+                $("#website_logo_thumb img").click();//显示LOGO
+            })
+
+    });
+</script>
+{/block}

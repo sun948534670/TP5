@@ -1,0 +1,15 @@
+{extend name="block:base" /}
+{block name="content"}
+    <!--轮播图插入-->
+    {:widget('widgets/banner_carousel', ['name' => 'index_carousel','data' =>$sliders])}
+    <!--热门视频-->
+    {include file="index/item/hot" /}
+    <!--分类视频-->
+    {include file="index/item/catagory_video" /}
+
+{/block}
+{block name="extra_js"}
+<script>
+    layui.use(['index']);
+</script>
+{/block}

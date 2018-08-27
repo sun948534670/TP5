@@ -1,0 +1,211 @@
+{extend name="block:iframe_base" /}
+{block name="extra_css"}
+<link rel="stylesheet" href="__ADMIN_VENDOR__/tagsinput/css/tagsinput.css">
+<link rel="stylesheet" href="__ADMIN_VENDOR__/tagsinput/css/css.css">
+{/block}
+
+{block name="content"}
+<div class="layui-form" lay-filter="admin-form-video" id="admin-form-video" style="padding: 20px 0 0 0;">
+    <input type="hidden" name="__token__" value="{$Request.token}"/>
+    <input type="hidden" name="id" value="{$result.id}">
+    <div class="layui-collapse">
+        <div class="layui-colla-item layui-col-md12">
+            <h2 class="layui-colla-title">基础设置</h2>
+            <div class="layui-colla-content layui-show">
+
+                <div class="layui-form-item layui-col-md6">
+                    <label class="layui-form-label">视频名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="required" placeholder="请输入视频名称" autocomplete="off"
+                               class="layui-input" value="{$result.name}">
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-col-md6">
+                    <label class="layui-form-label">分类：</label>
+                    <div class="layui-input-block">
+                        <select name="catagory_id" lay-verify="catagory_id">
+                            <option value="">请选择</option>
+                            {volist name="catagorys" id="row"}
+                            <option value="{$row.id}"
+                                {eq name="$row.id" value="$result.catagory_id"}selected{/eq}
+                            >{$row.catagory_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-col-md6">
+                    <label class="layui-form-label">标签：</label>
+                    <div class="layui-input-block tagsinput-primary">
+                        <input name="tag_id" class="tagsinput" data-role="tagsinput" placeholder="输入后回车"
+                               value="{$result.tag_id}"/>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-col-md12">
+                    <label class="layui-form-label">识别码：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="code" lay-verify="required" placeholder="请输入视频名称" autocomplete="off"
+                               class="layui-input layui-tips" data-tips-msg="由4-8位随机字符生成，不可与其他视频识别码重复" data-tips-p="2"
+                               value="{$result.code}">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="" title="自动生成" lay-filter="auto_create">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline">
+                        <input name="status" type="checkbox" lay-filter="switch" name="switch" lay-skin="switch"
+                               lay-text="启用|禁用"
+                               value="1" {eq name="$result.status" value="1" }checked {/eq}>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">高级设置</h2>
+            <div class="layui-colla-content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面图片</label>
+                    <button type="button" class="layui-btn" id="upload_img">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                    <input type="hidden" id="img_path" name="thumb" value="{$result.thumb}" lay-verify="upload_empty">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预览</label>
+                    <div class="enlarge_img">
+                        <img class="layui-upload-img enlarge_img" id="upload-normal-img"
+                             src="__UPLOAD_BASE__/frontend/video/thumb/{$result.thumb}">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">视频</label>
+                    <button type="button" class="layui-btn" id="upload_video">
+                        <i class="layui-icon">&#xe67c;</i>上传视频
+                    </button>
+                    <input type="hidden" id="video_path" name="path" value="{$result.path}" lay-verify="upload_empty">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预览</label>
+                    <div class="video_item">
+                        <video src="__UPLOAD_BASE__/frontend/video/entity/{$result.path}" controls="controls"
+                               id="upload-normal-video">
+                            您的浏览器不支持 video 标签。
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-colla-item layui-col-md12">
+            <h2 class="layui-colla-title">其他设置</h2>
+            <div class="layui-colla-content">
+                <div class="layui-form-item layui-col-md6">
+                    <label class="layui-form-label">详细描述：</label>
+                    <div class="layui-input-block tagsinput-primary">
+                        <textarea id="video_description" name="content" style="display: none;" lay-verify="update_textarea">{$result.content}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="user-front-submit" id="user-front-submit" value="确认">
+    </div>
+
+</div>
+{/block}
+{block name="extra_js"}
+<script src="__ADMIN_VENDOR__/tagsinput/js/jquery.js"></script>
+<script src="__ADMIN_VENDOR__/tagsinput/js/tagsinput.js"></script>
+<script>
+    layui.use(['form', 'upload', 'layedit'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , upload = layui.upload
+            , layedit = layui.layedit
+            , img_btn = $("#upload_img")
+            , video_btn = $("#upload_video");
+
+        var content = layedit.build('video_description'); //建立编辑器
+
+        form.on('checkbox(auto_create)', function (data) {
+            var code_ele = $("input[name=code]");
+            if (data.elem.checked) {
+                code_ele.attr("disabled", "disabled").addClass("layui-disabled");
+            } else {
+                code_ele.removeAttr("disabled").removeClass("layui-disabled").focus();
+            }
+        });
+
+
+        form.verify({
+            update_textarea: function (value, item) { //value：表单的值、item：表单的DOM对象
+                layedit.sync(content);
+            }
+        });
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: img_btn
+            , url: '{:url(\'video/edit\')}'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#upload-normal-img').attr('src', result); //图片链接（base64）
+                });
+                img_btn.attr("disabled","disabled").text("上传中...").addClass("layui-btn-disabled");
+            }
+            , done: function (res) {
+
+                img_btn.attr("disabled",false).text("重新上传").removeClass("layui-btn-disabled");
+
+                //如果上传失败
+                if (res.code == 0) {
+                    return layer.msg('上传失败!失败原因:' + res.msg);
+                } else if (res.code == 1) {
+                    //上传成功
+                    $("#img_path").val(res.msg);
+                    return layer.msg('成功');
+                }
+            }
+            , error: function () {
+                return layer.msg('上传失败',);
+            }
+        });
+
+        upload.render({
+            elem: video_btn
+            , url: '{:url(\'video/edit\')}'
+            , accept: 'video'
+            , field: 'video'
+            , before: function (obj) {
+                video_btn.attr("disabled","disabled").text("上传中...").addClass("layui-btn-disabled");
+            }
+            , done: function (res) {
+                video_btn.attr("disabled",false).text("重新上传").removeClass("layui-btn-disabled");
+
+                //如果上传失败
+                if (res.code == 0) {
+                    return layer.msg('上传失败!失败原因:' + res.msg);
+                } else if (res.code == 1) {
+                    //上传成功
+                    $("#video_path").val(res.msg);
+                    $('#upload-normal-video').attr('src', '__UPLOAD_BASE__/frontend/video/entity/' + res.msg); //图片链接（base64）
+                    return layer.msg('成功');
+                }
+            }
+            , error: function () {
+                return layer.msg('上传失败',);
+            }
+        });
+
+
+    });
+</script>
+{/block}
