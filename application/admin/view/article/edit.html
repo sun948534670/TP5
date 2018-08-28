@@ -1,0 +1,59 @@
+{extend name="block:iframe_base" /}
+{block name="content"}
+
+<div class="layui-form" lay-filter="admin-form-slider" id="admin-form-slider" style="padding: 20px 0 0 0;">
+    <input type="hidden" name="__token__" value="{$Request.token}" />
+    <input type="hidden" name="id"  value="{$article.id}">
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-inline">
+            <input type="text" name="title" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" value="{$article.title}">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细描述：</label>
+        <div class="layui-input-block tagsinput-primary">
+            <textarea id="article_description" name="content" style="display: none;" lay-verify="update_textarea">{$article.content}</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sort" lay-verify="required|number" placeholder="数字越大，越靠前" autocomplete="off" class="layui-input" value="{$article.sort}">
+        </div>
+    </div>
+
+    <div class="layui-form-item" lay-filter="sex">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" lay-filter="switch" name="switch" lay-skin="switch" lay-text="启用|禁用" value="1" {eq name="$article.status" value="1"}checked {/eq}>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit="" lay-filter="user-front-submit" id="user-front-submit" value="确认">
+    </div>
+</div>
+{/block}
+{block name="extra_js"}
+<script>
+    layui.use(['upload','form','layer','layedit'], function(){
+        var $ = layui.$
+            ,upload = layui.upload
+            ,layer = layui.layer
+            ,form = layui.form
+            ,layedit = layui.layedit;
+
+        var content = layedit.build('article_description'); //建立编辑器
+
+        form.verify({
+            update_textarea: function (value, item) { //value：表单的值、item：表单的DOM对象
+                layedit.sync(content);
+            }
+        });
+
+    });
+</script>
+{/block}

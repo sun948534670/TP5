@@ -51,7 +51,7 @@ class Slider extends Admin
     }
 
     /*
-     * 编辑用户(不渲染页面)
+     * 编辑轮播图(不渲染页面)
      *@author 孙承志 <948534670@qq.com>
      * @return json
      */
